@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru" style="height: 100%;">
+    <head>
+        <meta charset="UTF-8">
+        <title>Регистрация</title>
+        <link rel="stylesheet" href="../css/style.css">
+        <link rel="stylesheet" href="../css/font-awesome.min.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    </head>
+    <body class="auch_body">
+        <div class="auch_form">
+            <h2 class="af_h2">Регистрация</h2>
+            <input class="af_input" id="name" type="text" placeholder="Имя">
+            <input class="af_input" id="surname" type="text" placeholder="Фамилия">
+            <input class="af_input" id="email" type="text" placeholder="E-mail">
+            <input class="af_input" id="pass" type="password" placeholder="Пароль">
+            <input class="af_input" id="pass_two" type="password" placeholder="Повтор пароля">
+            <button class="af_button" onclick="reg_ajax()">Зарегистрироваться</button>
+            <a class="af_a" href="/admin/login.html">Войти</a>
+        </div>
+        <script>
+            function reg_ajax() {
+                var error = '';
+                var name = document.querySelector('#name').value;
+                var surname = document.querySelector('#surname').value;
+                var email = document.querySelector('#email').value;
+                var password = document.querySelector('#pass').value;
+                var password_two = document.querySelector('#pass_two').value;
+
+                if (password_two == '') {
+                    error = 'Введите повторный пароль!';
+                }
+                if (password == '') {
+                    error = 'Введите пароль!';
+                }
+                if (email == '') {
+                    error = 'Введите email!';
+                }
+                if (surname == '') {
+                    error = 'Введите фамилию!';
+                }
+                if (name == '') {
+                    error = 'Введите имя!';
+                }
+                if (password_two != password) {
+                    error = 'Пароли не совпадают!';
+                }
+
+                if (error == '') {
+                    $.ajax({
+                        url: '/api/',
+                        method: 'get',
+                        dataType: 'json',
+                        data: {query: 'email', email: email},
+                        success: function(data) {
+                            if (data['email'] == false) {
+                                $.ajax({
+                                    url: '/api/',
+                                    method: 'post',
+                                    dataType: 'json',
+                                    data: {auch: 'reg', name: document.querySelector('#name').value, surname: document.querySelector('#surname').value, email: document.querySelector('#email').value, pass: document.querySelector('#pass_two').value},
+                                    success: function(data) {
+                                        $(location).attr('href', '/admin');
+                                    }
+                                });
+                            } else {
+                                alert('Пользователь уже существует!');
+                            }
+                        }
+                    });
+                } else {
+                    alert(error);
+                }
+            }
+        </script>
+    </body>
+</html>

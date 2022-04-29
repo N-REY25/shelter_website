@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru" style="height: 100%;">
+    <head>
+        <meta charset="UTF-8">
+        <title>Авторизация</title>
+        <link rel="stylesheet" href="../css/style.css">
+        <link rel="stylesheet" href="../css/font-awesome.min.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    </head>
+    <body class="auch_body">
+        <div class="auch_form">
+            <h2 class="af_h2">Авторизация</h2>
+            <input id="login" class="af_input" type="text" placeholder="E-mail или Телефон">
+            <input id="pass" class="af_input" type="password" placeholder="Пароль">
+            <button class="af_button" onclick="login_ajax()">Войти</button>
+            <a class="af_a" href="/admin/register.html">Зарегистрироваться</a>
+        </div>
+        <script>
+            function login_ajax() {
+                var error = '';
+                var login = document.querySelector('#login').value;
+                var password = document.querySelector('#pass').value;
+                    
+                if (password == '') {
+                    error = 'Введите пароль!';
+                }
+                if (login == '') {
+                    error = 'Введите логин!';
+                }
+
+                if (error == '') {
+                    $.ajax({
+                        url: '/api/',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {query: 'login', login: login, pass: password},
+                        success: function(data) {
+                            if (data['status'] == 'error') {
+                                alert(data['message']);
+                            }
+                            if (data['status'] == 'successful') {
+                                $(location).attr('href', '/admin')
+                            }
+                        }
+                    });
+                } else {
+                    alert(error);
+                }
+            }
+        </script>
+    </body>
+</html>
